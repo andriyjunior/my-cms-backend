@@ -4,19 +4,61 @@ import Organization, { OrganizationModel } from "../models/organizationModel";
 import { UserModel } from "../models/userModel";
 import { generateRandomPassword } from "../utilities/passwordUtils";
 import emailService from "./emailService";
-import tokenService from "./tokenService";
 import userService from "./userService";
 
 class OrganizationService {
+  async getPaginatedOrganizations(
+    page: number = 1,
+    limit: number = 10
+  ): Promise<OrganizationModel[]> {
+    try {
+      const skip = (page - 1) * limit;
+
+      const organizations = await Organization.find().skip(skip).limit(limit);
+
+      log.success(
+        `Fetched ${organizations.length} organizations for page ${page}`
+      );
+      return organizations;
+    } catch (error) {
+      log.error("Error fetching paginated organizations:", error);
+      return [];
+    }
+  }
+
+  async getPaginatedOrganizationsByUserId(
+    userId: string,
+    page: number = 1,
+    limit: number = 10
+  ) {
+    try {
+      const skip = (page - 1) * limit;
+
+      const organizations = await Organization.find({
+        members: userId,
+      })
+        .skip(skip)
+        .limit(limit);
+
+      log.success(
+        `Fetched ${organizations.length} organizations for page ${page}`
+      );
+      return organizations;
+    } catch (error) {
+      log.error("Error in getOrganizationsByUserId:", error);
+      throw error;
+    }
+  }
+
   async getOrganizationById(
     organizationId: string
   ): Promise<OrganizationModel | null> {
     // Implement logic to retrieve an organization by ID
     try {
       const organization = await Organization.findById(organizationId)
-        .populate("members", "name") // Populate the members with only the name field
-        .populate("products", "name") // Populate the products with only the name field
-        .populate("orders", "orderNumber"); // Populate the orders with only the orderNumber field
+        .populate("members") // Populate the members with only the name field
+        .populate("products") // Populate the products with only the name field
+        .populate("orders"); // Populate the orders with only the orderNumber field
 
       log.success("Organization has been found successfully");
       return organization;

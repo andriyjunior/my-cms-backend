@@ -11,24 +11,11 @@ const userGetRoles = [
   UserRoles.SYSTEM_ADMIN,
 ];
 
-const userPostRoles = [
-  UserRoles.ADMIN,
-  UserRoles.MANAGER,
-  UserRoles.SYSTEM_ADMIN,
-];
-
 router.get(
-  "/:organizationId",
+  "/:page/:limit",
   verifyAccessToken,
   authorize(userGetRoles),
-  organizationController.getOrganizationById
+  organizationController.getOrganizationsByUserId
 );
-router.post(
-  "/",
-  verifyAccessToken,
-  authorize(userPostRoles),
-  organizationController.createOrganization
-);
-router.post("/add-member", organizationController.addMemberToOrganization);
 
 export default router;

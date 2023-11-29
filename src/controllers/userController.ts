@@ -1,14 +1,17 @@
 import { Request, Response } from "express";
 import UserService from "../services/userService";
-
-interface AuthenticatedRequest extends Request {
-  user?: any;
-}
+import { AuthenticatedRequest } from "../types/authenticatedTypes";
 
 class UserController {
   async getUserById(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user.userId;
+      const userId = req?.user?.userId;
+
+      if (!userId) {
+        res.status(404).json({ error: "User id is empty" });
+        return;
+      }
+
       const user = await UserService.getUserById(userId);
 
       if (!user) {
@@ -42,7 +45,13 @@ class UserController {
 
   async updateUser(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const userId = req.user.userId;
+      const userId = req.user?.userId;
+
+      if (!userId) {
+        res.status(404).json({ error: "User id is empty" });
+        return;
+      }
+
       const updatedUser = req.body;
       const user = await UserService.updateUser(userId, updatedUser);
 

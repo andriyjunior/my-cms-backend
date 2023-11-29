@@ -1,11 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { UserRoles } from "../enums/UserRoles";
 import TokenService from "../services/tokenService";
+import { AuthenticatedRequest } from "../types/authenticatedTypes";
 import "../configs/dotenv";
-
-interface AuthenticatedRequest extends Request {
-  user?: any;
-}
 
 // Middleware to verify Bearer Token from the Authorization header
 export const verifyAccessToken = (
@@ -29,7 +26,7 @@ export const verifyAccessToken = (
     const decoded = TokenService.decodeAccessToken(accessToken);
 
     if (decoded) {
-      req.user = decoded;
+      req.user = decoded as any;
       next();
     }
   } catch (error) {
@@ -43,10 +40,10 @@ export const authorize =
   (requiredRole: UserRoles[]) =>
   (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     // Assuming user roles are included in the JWT payload
-    const userRole = req.user.role;
+    const userRole = req.user?.role;
 
     // Check if the user has the required role
-    if (requiredRole.includes(userRole)) {
+    if (userRole && requiredRole.includes(userRole as UserRoles)) {
       return res.status(403).json({ error: "Forbidden" });
     }
 

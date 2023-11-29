@@ -1,4 +1,3 @@
-// services/UserService.ts
 import { log } from "../logs";
 import { User, UserModel } from "../models/userModel";
 import { hashPassword, comparePasswords } from "../utilities/passwordUtils";
@@ -64,7 +63,6 @@ class UserService {
     organizationId: string
   ): Promise<UserModel | null> {
     try {
-      // Retrieve the user
       const user = await User.findById(userId);
 
       if (!user) {
@@ -72,16 +70,13 @@ class UserService {
         return null;
       }
 
-      // Check if the user already has this organization
       if (user.organizations?.includes(organizationId)) {
         log.error("User is already associated with this organization");
         return user;
       }
 
-      // Add the organization to the user's organizations array
       user.organizations?.push(organizationId);
 
-      // Save the updated user
       const updatedUser = await user.save();
       log.success("Organization added to user successfully");
       return updatedUser;
@@ -103,13 +98,13 @@ class UserService {
       const user = await User.findOne({ email });
 
       if (!user) {
-        return null; // User not found
+        return null;
       }
 
       const isPasswordValid = await comparePasswords(password, user.password);
 
       if (!isPasswordValid) {
-        return null; // Incorrect password
+        return null;
       }
 
       const expiresIn = TokenService.getExpiresIn();

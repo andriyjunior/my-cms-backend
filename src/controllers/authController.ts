@@ -85,7 +85,7 @@ class AuthController {
       }
 
       res.json({
-        token: tokens.newAccessToken,
+        accessToken: tokens.newAccessToken,
         refreshToken: tokens.newRefreshToken,
         expiresIn: tokens.expiresIn,
       });

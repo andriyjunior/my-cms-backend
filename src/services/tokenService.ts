@@ -56,7 +56,7 @@ class TokenService {
       );
 
       // Generate a new refresh token
-      const newRefreshToken = this.generateAccessToken(
+      const newRefreshToken = this.generateRefreshToken(
         decodedRefreshToken.userId
       );
 

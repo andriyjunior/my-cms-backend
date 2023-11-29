@@ -8,6 +8,7 @@ import crypto from "crypto";
 import userRoutes from "./routes/userRoutes";
 import authRoutes from "./routes/authRoutes";
 import organizationRoutes from "./routes/organizationRoutes";
+import organizationsRoutes from "./routes/organizationsRoutes";
 
 import "./configs/dotenv";
 
@@ -31,6 +32,7 @@ class Server {
   private setupRoutes(): void {
     this.app.use("/user", userRoutes);
     this.app.use("/auth", authRoutes);
+    this.app.use("/organizations", organizationsRoutes);
     this.app.use("/organization", organizationRoutes);
   }
 
